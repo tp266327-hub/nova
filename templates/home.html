@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nova workspace</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="app">
+<div class="aurora soft" aria-hidden="true"><i></i><i></i><i></i></div>
+<header class="top">
+  <div class="brand"><span class="logo"></span>Nova</div>
+  <nav>
+    <button class="link" data-open="help">Help</button>
+    <button class="link" data-open="premium">{% if user.premium %}Premium ✓{% else %}Go Premium{% endif %}</button>
+    <span class="who">{{ user.username }}</span>
+    <a class="link" href="/logout">Sign out</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="orb" aria-hidden="true"></div>
+  <h1>Hello, {{ user.username }}.<br>What are we building today?</h1>
+  <p class="mute">Keep your projects, files and ideas in one place, and ask Nova when you get stuck.</p>
+</section>
+
+<main class="grid">
+  <section class="panel" id="projects">
+    <h2>Projects</h2>
+    <form id="pf" class="stack">
+      <input name="name" placeholder="Project name" required>
+      <textarea name="details" rows="3" placeholder="What is this project about?"></textarea>
+      <label class="file"><input type="file" name="file"><span id="fn">Attach a file (optional)</span></label>
+      <p class="err" id="perr" role="alert"></p>
+      <button class="btn primary">Add project</button>
+    </form>
+    <ul id="plist" class="plist"></ul>
+  </section>
+
+  <section class="panel chat" id="chat">
+    <h2>Ask Nova</h2>
+    <div id="log" class="log" aria-live="polite">
+      <div class="msg bot">Hi, I'm Nova. Ask me to name a project, outline a plan, or explain how this workspace works.</div>
+    </div>
+    <form id="cf" class="row">
+      <input id="ci" placeholder="Type a message" autocomplete="off" required>
+      <button class="btn primary">Send</button>
+    </form>
+  </section>
+
+  <section class="panel wide" id="comments">
+    <h2>Comments</h2>
+    <form id="mf" class="row">
+      <input id="mi" placeholder="Leave a comment" maxlength="500" required>
+      <button class="btn">Post</button>
+    </form>
+    <ul id="clist" class="clist"></ul>
+  </section>
+</main>
+
+<dialog id="help"><h2>Help</h2>
+  <details open><summary>How do I add a project?</summary><p>Enter a name and details in Projects, optionally attach a file, then choose Add project.</p></details>
+  <details><summary>Which files can I attach?</summary><p>PDF, PNG, JPG, TXT, ZIP, DOCX and CSV.</p></details>
+  <details><summary>How does Nova work?</summary><p>Nova answers from the conversation you have open. Starting a new session clears it.</p></details>
+  <details><summary>What is Premium?</summary><p>Unlimited projects and uploads up to 16 MB. Free accounts get {{ free_projects }} projects and {{ free_mb }} MB files.</p></details>
+  <form method="dialog"><button class="btn">Close</button></form>
+</dialog>
+
+<dialog id="premium"><h2>Premium</h2>
+  {% if user.premium %}<p>You're on Premium. Thank you.</p>
+  {% else %}
+  <div class="plans">
+    <div><h3>Free</h3><p class="mute">{{ free_projects }} projects<br>{{ free_mb }} MB files</p></div>
+    <div class="best"><h3>Premium</h3><p class="mute">Unlimited projects<br>16 MB files</p></div>
+  </div>
+  <p class="mute small">Demo checkout: this unlocks Premium instantly without payment.</p>
+  <button class="btn primary" id="buy">Upgrade now</button>{% endif %}
+  <form method="dialog"><button class="btn">Close</button></form>
+</dialog>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body></html>

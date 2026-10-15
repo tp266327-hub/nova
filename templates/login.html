@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign in · Nova</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth">
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<main class="auth-card">
+  <div class="brand"><span class="logo"></span>Nova</div>
+  <h1 id="title">Welcome back</h1>
+  <p class="mute" id="sub">Sign in to your workspace.</p>
+  <form id="f" autocomplete="on">
+    <label>Username<input id="u" name="username" required minlength="3" autocomplete="username"></label>
+    <label>Password<input id="p" name="password" type="password" required minlength="6" autocomplete="current-password"></label>
+    <p class="err" id="err" role="alert"></p>
+    <button class="btn primary" id="go">Sign in</button>
+  </form>
+  <p class="mute small"><span id="swl">New here?</span> <a href="#" id="sw">Create an account</a></p>
+</main>
+<script>
+let mode="login";
+const $=id=>document.getElementById(id);
+$("sw").onclick=e=>{e.preventDefault();mode=mode==="login"?"register":"login";
+  const r=mode==="register";
+  $("title").textContent=r?"Create your account":"Welcome back";
+  $("sub").textContent=r?"It takes ten seconds.":"Sign in to your workspace.";
+  $("go").textContent=r?"Create account":"Sign in";
+  $("swl").textContent=r?"Have an account?":"New here?";
+  $("sw").textContent=r?"Sign in":"Create an account";$("err").textContent="";};
+$("f").onsubmit=async e=>{e.preventDefault();$("go").disabled=true;
+  const r=await fetch("/login",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({mode,username:$("u").value,password:$("p").value})});
+  const d=await r.json();$("go").disabled=false;
+  if(r.ok)location.href=d.next;else $("err").textContent=d.error;};
+</script>
+</body></html>
